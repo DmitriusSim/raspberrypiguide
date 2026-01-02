@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Raspberry Pi OS Mockup</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #1e1e1e;
+            color: #fff;
+            overflow: hidden;
+        }
+
+        /* Desktop background */
+        .desktop {
+            background: linear-gradient(45deg, #ff0080, #2bff00);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 60px;
+            position: relative;
+        }
+
+        /* Taskbar at the top */
+        .taskbar {
+            width: 100%;
+            height: 50px;
+            background-color: #333;
+            position: fixed;
+            top: 0;
+            display: flex;
+            justify-content: flex-start;
+            padding: 5px;
+            box-sizing: border-box;
+        }
+
+        .taskbar .button {
+            color: white;
+            font-size: 18px;
+            padding-left: 10px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            margin-right: 20px;
+        }
+
+        .taskbar .button:hover {
+            background-color: #444;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+
+        /* Start Menu */
+        .start-menu {
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            padding-left: 10px;
+            display: flex;
+            align-items: center;
+            position: absolute;
+            top: 50px;
+            left: 10px;
+            z-index: 20;
+        }
+
+        .menu-dropdown {
+            display: none;
+            position: absolute;
+            top: 50px;
+            left: 10px;
+            width: 200px;
+            background-color: #fff;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+            z-index: 10;
+        }
+
+        .menu-dropdown a {
+            color: #333;
+            text-decoration: none;
+            padding: 10px;
+            display: block;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .menu-dropdown a:hover {
+            background-color: #0078D7;
+            color: white;
+        }
+
+        /* Application Windows */
+        .window {
+            display: none;
+            position: absolute;
+            top: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            height: 80%;
+            background: #1e1e1e;
+            border-radius: 5px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .window-header {
+            background-color: #0078D7;
+            color: white;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        .window-body {
+            padding: 10px;
+            height: 200px;
+            overflow-y: auto;
+            font-size: 14px;
+        }
+
+        .window-footer {
+            background-color: #f1f1f1;
+            padding: 5px;
+            text-align: center;
+        }
+
+        /* Text Editor Styling */
+        .text-editor {
+            width: 100%;
+            height: 100%;
+            font-family: Courier, monospace;
+            background-color: #f9f9f9;
+            border: none;
+            resize: none;
+            padding: 10px;
+            font-size: 14px;
+        }
+
+        /* Trash Can Styling */
+        .trash-can {
+            position: absolute;
+            bottom: 80px;
+            left: 30px;
+            width: 50px;
+            height: 50px;
+            background-color: #444;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .trash-can:hover {
+            background-color: #555;
+        }
+
+        /* Dragging Files */
+        .draggable {
+            padding: 10px;
+            background-color: #0078D7;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 0;
+        }
+
+        .draggable:hover {
+            background-color: #005C99;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Desktop Background -->
+<div class="desktop">
+    <!-- Taskbar -->
+    <div class="taskbar">
+        <div class="button" onclick="toggleMenu()">Menu</div>
+        <div class="button" onclick="openApp('fileExplorer')">File Explorer</div>
+        <div class="button" onclick="openApp('editor')">VS Code</div>
+        <div class="button" onclick="openApp('browser')">Browser</div>
+        <div class="button" onclick="openApp('terminal')">Terminal</div>
+    </div>
+
+    <!-- Start Menu Dropdown -->
+    <div id="menuDropdown" class="menu-dropdown">
+        <a href="#" onclick="openApp('textEditor')">Text Editor</a>
+        <a href="#">Settings</a>
+        <a href="#">Control Panel</a>
+    </div>
+
+    <!-- File Explorer Window -->
+    <div id="fileExplorer" class="window">
+        <div class="window-header" onclick="closeApp('fileExplorer')">File Explorer</div>
+        <div class="window-body">
+            <p>File Explorer - Mockup</p>
+            <ul>
+                <li class="draggable" draggable="true" ondragstart="drag(event)" id="file1">Document 1.txt</li>
+                <li class="draggable" draggable="true" ondragstart="drag(event)" id="file2">Document 2.txt</li>
+                <li class="draggable" draggable="true" ondragstart="drag(event)" id="file3">Document 3.txt</li>
+            </ul>
+        </div>
+        <div class="window-footer">
+            <button onclick="closeApp('fileExplorer')">Close</button>
+        </div>
+    </div>
+
+    <!-- VS Code Text Editor Window -->
+    <div id="editor" class="window">
+        <div class="window-header" onclick="closeApp('editor')">VS Code - Mock Editor</div>
+        <div class="window-body">
+            <textarea id="editorTextArea" class="text-editor" placeholder="Start typing..."></textarea>
+        </div>
+        <div class="window-footer">
+            <button onclick="closeApp('editor')">Close</button>
+        </div>
+    </div>
+
+    <!-- Browser Window -->
+    <div id="browser" class="window">
+        <div class="window-header" onclick="closeApp('browser')">Browser</div>
+        <div class="window-body">
+            <iframe src="https://www.raspberrypi.com" style="width:100%; height:100%;"></iframe>
+        </div>
+        <div class="window-footer">
+            <button onclick="closeApp('browser')">Close</button>
+        </div>
+    </div>
+
+    <!-- Terminal Window -->
+    <div id="terminal" class="window">
+        <div class="window-header" onclick="closeApp('terminal')">Terminal</div>
+        <div class="window-body">
+            <textarea id="terminalTextArea" class="text-editor" placeholder="Type your commands here..."></textarea>
+        </div>
+        <div class="window-footer">
+            <button onclick="closeApp('terminal')">Close</button>
+        </div>
+    </div>
+
+    <!-- Trash Can -->
+    <div id="trashCan" class="trash-can" ondrop="drop(event)" ondragover="allowDrop(event)">
+        🗑️
+    </div>
+</div>
+
+<script>
+    // Toggle the start menu dropdown visibility
+    function toggleMenu() {
+        const menu = document.getElementById('menuDropdown');
+        menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+    }
+
+    // Open application window
+    function openApp(appId) {
+        document.getElementById(appId).style.display = 'flex';
+    }
+
+    // Close application window
+    function closeApp(appId) {
+        document.getElementById(appId).style.display = 'none';
+    }
+
+    // Enable drag for file elements
+    function drag(event) {
+        event.dataTransfer.setData("text", event.target.id);
+    }
+
+    // Allow drop on the trash can
+    function allowDrop(event) {
+        event.preventDefault();
+    }
+
+    // Handle file drop onto trash can
+    function drop(event) {
+        event.preventDefault();
+        const fileId = event.dataTransfer.getData("text");
+        const fileElement = document.getElementById(fileId);
+        if (fileElement) {
+            fileElement.style.display = 'none'; // Hide the file from the File Explorer
+            alert('File moved to Trash!');
+        }
+    }
+</script>
+
+</body>
+</html>
